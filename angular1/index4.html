@@ -1,0 +1,60 @@
+<html ng-app="zfpxmd">
+<head>
+    <meta charset="utf8" />
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="bootstrap.css">
+</head>
+<body data-spy="scroll" data-target="#myScrollspy">
+<div class="container">
+    <div class="jumbotron">
+        <h1>Bootstrap Affix</h1>
+    </div>
+    <div class="row">
+        <div class="col-xs-3" id="myScrollspy">
+            <ul class="nav nav-tabs nav-stacked" data-spy="affix" data-offset-top="125">
+                <li class="active"><a href="#/home">第一部分</a></li>
+                <li><a href="#/home1">第二部分</a></li>
+            </ul>
+        </div>
+        <div class="col-xs-9" ng-view>
+
+        </div>
+    </div>
+</div>
+</body>
+</html>
+<script type="text/javascript" src=js/angular.js></script>
+<script type="text/javascript" src=js/angular-route.js></script>
+<script type="text/javascript">
+    var zfpx=angular.module('zfpxmd',['ngRoute']);//二个参数定义新模块，
+    angular.module('zfpxmd').controller('homeCtrl',function($timeout,$scope,$http){
+        $scope.home="home";
+        $http.get('books.json').success(function(result){
+            $scope.books=result;
+        });
+
+    });
+    angular.module('zfpxmd').controller('home1Ctrl',function($timeout,$scope,$http,$routeParams){
+        var bookId=$routeParams.bookid;
+        $http.get('books.json').success(function(result){
+            $scope.book=result.filter(function(book){
+               return book.id==bookId;
+           })[0];
+        });
+
+
+    });
+    angular.module('zfpxmd').config(function($routeProvider){
+        //进行路由配置config方法是angular应用
+        $routeProvider.when('/home',{
+            templateUrl:'home.html',
+            controller:'homeCtrl'
+        }).when('/home1/:bookid',{
+            templateUrl:'home1.html',
+            controller:'home1Ctrl'
+        }).otherwise({
+            redirectato:'/index'
+        });
+    });
+
+</script>

@@ -1,0 +1,50 @@
+<html ng-app="zfpxmd">
+<head>
+    <meta charset="utf8" />
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="bootstrap.css">
+</head>
+<body>
+<div ng-controller="zfpxCtrl">
+   <ul ng-repeat="book in books | limitTo:2 | orderBy:ob | upperSome:2:2">
+       <li ng-bind="book">
+
+       </li>
+
+   </ul>
+</div>
+</body>
+</html>
+<script type="text/javascript" src=js/angular.js></script>
+<script type="text/javascript">
+    var zfpx=angular.module('zfpxmd',[]);//二个参数定义新模块，
+    //一个获取刚才定义的模块
+    angular.module("zfpxmd").factory("bookserver",function(){
+        return {
+            list:function(){
+                return books;
+            },
+            add:function(bookname){
+                books.push(bookname);
+                return books;
+            },
+            del:function(index){
+                books.splice(index,1);
+            }
+        }
+    });
+    angular.module('zfpxmd').filter("upperSome",function(){
+        //input 原始输入值
+        return function (input,fount,end){
+            return input.slice(0,fount).toUpperCase()+input.slice(fount,end*-1)+input.slice(end*-1).toUpperCase();
+        }
+    })
+    angular.module('zfpxmd').controller('zfpxCtrl',function($timeout,$scope,$http){
+        $scope.books=["nodejs","js"];
+        $scope.ob='-price';
+//        $scope.books=bookserver.list();
+//        $scope.addList=bookserver.add;
+//        $scope.delList=bookserver.del;
+
+    });
+</script>

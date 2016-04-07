@@ -1,0 +1,37 @@
+<html ng-app="zfpxmd">
+<head>
+	<meta charset="utf8" />
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="bootstrap.css">
+</head>
+<body>
+<table class="table" ng-controller="zfpxCtrl" ng-init='books=[{"name":"nodejs","prices":5},{"name":"js","prices":10}]'>
+   <caption>基本的表格布局</caption>
+   <tbody>
+      <tr>
+        <input type="text" />
+      </tr>
+   </tbody>
+</table>
+</body>
+</html>
+<script type="text/javascript" src=js/angular.js></script>
+<script type="text/javascript"> 
+var zfpx=angular.module('zfpxmd',[]);//二个参数定义新模块，
+//一个获取刚才定义的模块
+angular.module('zfpxmd').controller('zfpxCtrl',function($timeout,$scope,$http){
+	$scope.username='zfpx';
+	$http.get("./books.json").success(function(result){
+		console.log(result);
+		$scope.books=result;
+	});
+	// $timeout(function(){
+	// 	$scope.username=new Date().toLocaleString();
+	// 	$scope.clcikMe=function(){
+	// 		alert($scope.username);
+	// 	}
+	// },1000);
+});
+
+
+</script>

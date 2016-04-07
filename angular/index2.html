@@ -1,0 +1,23 @@
+<html ng-app="zfpxmd">
+<head>
+	<meta charset="utf8" />
+	<title></title>
+</head>
+<body>
+<div  ng-controller="zfpxCtrl">
+	{{username}}
+</div>
+</body>
+</html>
+<script type="text/javascript" src=js/angular.js></script>
+<script type="text/javascript"> 
+var zfpx=angular.module('zfpxmd',[]);//二个参数定义新模块，
+//一个获取刚才定义的模块
+angular.module('zfpxmd').controller('zfpxCtrl',function($timeout,$scope){
+	$scope.username='zfpx';
+	$timeout(function(){
+		$scope.username=new Date().toLocaleString();
+
+	},1000);
+})
+</script>

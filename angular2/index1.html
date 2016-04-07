@@ -1,0 +1,36 @@
+<html ng-app="zfpxmd">
+<head>
+    <meta charset="utf8" />
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="bootstrap.css">
+</head>
+<body>
+<div class="container" ng-controller="homeCtrl">
+    <div class="row">
+        <div class="col-md-12">
+            <input type="text" ng-model="book.name"/>
+            <button class="btn btn-success" ng-click="add()">添加</button>
+            <ul>
+                <li ng-repeat="book in books">{{book.name}}</li>
+            </ul>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+<script type="text/javascript" src=js/angular.js></script>
+<script type="text/javascript" src=js/angular-route.js></script>
+<script type="text/javascript" src=js/firebase.js></script>
+<script type="text/javascript" src=js/angularfire.js></script>
+<script type="text/javascript">
+    var zfpx=angular.module('zfpxmd',['firebase']);//二个参数定义新模块，
+    angular.module('zfpxmd').controller('homeCtrl',function($timeout,$scope,$http,$firebaseArray){
+        $scope.book={};
+        var base=new Firebase('https://sizzling-heat-3542.firebaseio.com/shijie');
+        var bookBase=$firebaseArray(base);
+        $scope.books=bookBase;
+        $scope.add=function(){
+            bookBase.$add($scope.book);
+        };
+    });
+</script>

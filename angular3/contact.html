@@ -1,0 +1,145 @@
+<html ng-app="zfpxmd">
+<head>
+    <meta charset="utf8" />
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="bootstrap.css">
+</head>
+<body>
+<div class="container" ng-controller="homeCtrl">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-success" ng-show="msg">{{msg}}</div>
+            <div class="row">
+                <a href="#" class="btn btn-default" ng-click="showAddForm()">添加</a>
+                <a href="#" class="btn btn-default" ng-click="cancel()">取消</a>
+            </div>
+
+            <div class="row">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        姓名{{contact.name}}
+                        email{{contact.email}}
+                    </div>
+                </div>
+            </div>
+            <form ng-submit="addFormSubmit();" ng-show="addFormShow" >
+                <h3>增加联系人</h3>
+                <div class="row">
+                    <div class="col-md-12">
+                        <label>
+                            <input type="text" class="form-control" ng-model="contact.name" placeholder="name" required/>
+                        </label>
+                        <label>
+                            <input type="text" class="form-control" ng-model="contact.email" placeholder="email" required/>
+                        </label>
+                        <label>
+                            <input type="submit" class="form-control" value="add" />
+                        </label>
+                    </div>
+                </div>
+            </form>
+            <form ng-submit="editFormSubmit();" ng-show="editFormShow" >
+                <h3>编辑联系人</h3>
+                <div class="row">
+                    <div class="col-md-12">
+                        <label>
+                            <input type="text" class="form-control" ng-model="contact.name" placeholder="name" required/>
+                        </label>
+                        <label>
+                            <input type="text" class="form-control" ng-model="contact.email" placeholder="email" required/>
+                        </label>
+                        <label>
+                            <input type="submit" class="form-control" value="提交编辑" />
+                        </label>
+                    </div>
+                </div>
+            </form>
+            <h3>你的联系人 <span class="badge">{{contacts.length}}</span></h3>
+            <table class="table table-responsive">
+                <tr>
+                    <th>姓名</th>
+                    <th>邮箱</th>
+                    <th>操作</th>
+                </tr>
+                <tr ng-repeat="contact in contacts" ng-click="select(contact)">
+                    <td>{{contact.name}}</td>
+                    <td>{{contact.email}}</td>
+                    <td>
+                        <a href="#" class="btn btn-warning" ng-click="editContactShow(contact)">编辑</a>
+                        <a href="#" class="btn btn-danger" ng-click="delete(contact)">删除</a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+<script type="text/javascript" src=js/angular.js></script>
+<script type="text/javascript" src=js/angular-route.js></script>
+<script type="text/javascript" src=js/firebase.js></script>
+<script type="text/javascript" src=js/angularfire.js></script>
+<script type="text/javascript">
+    var zfpx=angular.module('zfpxmd',['firebase']);//二个参数定义新模块，
+    angular.module('zfpxmd').controller('homeCtrl',function($timeout,$scope,$http,$firebaseArray){
+        $scope.contact={};
+        var base=new Firebase('https://sizzling-heat-3542.firebaseio.com/shijie_contact');
+        var bookBase=$firebaseArray(base);
+        $scope.contacts=bookBase;
+        $scope.showAddForm=function(){
+            $scope.contact={};
+            $scope.addFormShow=true;
+            $scope.editFormShow=false;
+        }
+        $scope.addFormSubmit=function(){
+                bookBase.$add($scope.contact).then(function(ref){
+                    var id=ref.key();
+                    console.log(id);
+                    $scope.contact={};
+                    $scope.addFormShow=false;
+                    $scope.msg="添加成功";
+                    $timeout(function(){
+                        return $scope.msg=false;
+                    },300);
+                });
+            return false;
+        };
+        $scope.delete=function(contact){
+            bookBase.$remove(contact);
+            $scope.msg="删除成功！";
+            $timeout(function(){
+                return $scope.msg=false;
+            },300);
+        }
+        $scope.select=function(contact){
+            $scope.contact=contact;
+        }
+        $scope.editContactShow=function(contact){
+            $scope.contact=contact;
+            $scope.editFormShow=true;
+            $scope.addFormShow=false;
+
+        }
+        $scope.editFormSubmit=function(){
+            var id=$scope.contact.$id;
+            var record=bookBase.$getRecord(id);
+            record.name=$scope.contact.name;
+            record.email=$scope.contact.email;
+            bookBase.$save(record).then(function(ref){
+                console.log(ref.key);
+            });
+            $scope.contact={};
+            $scope.editFormShow=false;
+            $scope.msg="联系人已更新";
+            $timeout(function(){
+                return $scope.msg=false;
+            },300);
+            return false;
+        }
+        $scope.cancel=function(){
+            $scope.contact={};
+            $scope.editFormShow=false;
+            $scope.addFormShow=false;
+        }
+    });
+</script>

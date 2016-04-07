@@ -1,0 +1,91 @@
+<html ng-app="zfpxmd">
+<head>
+	<meta charset="utf8" />
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="bootstrap.css">
+</head>
+<body>
+<!-- <div  ng-controller="zfpxCtrl">
+	<span ng-bind="age"></span>
+    <div  ng-controller="zfpxCtrl">
+		<span ng-bind="age" ng-init="age=8"></span>
+	</div>
+
+
+	<span ng-if="username">
+	<span ng-bind="username"></span>
+	</span>
+</div> -->
+
+<div ng-controller="zfpxCtrl">
+	{{count}}
+<table class="table" >
+   <caption>基本的表格布局</caption>
+   <tbody>
+      <tr>
+         <td>书名</td>
+         <td>价格</td>
+      </tr>
+      <tr ng-repeat="book in books">
+         <td>{{book.name}}</td>
+         <td><input type="text" ng-model="book.prices" /></td>
+      </tr>
+      
+   </tbody>
+</table>
+<table class="table" >
+   <tbody>
+      <tr>
+         <td>总价格： {{cale()}}</td>
+         <td>折扣：<input type="text" ng-model="discount"/></td>
+         <td>最终价:{{cale()*discount}}</td>
+      </tr>
+      
+   </tbody>
+</table>
+</div>
+<div ng-controller="zfpxCtrl">{{count}}</div>
+</body>
+</html>
+<script type="text/javascript" src=js/angular.js></script>
+<script type="text/javascript"> 
+var zfpx=angular.module('zfpxmd',[]);//二个参数定义新模块，
+//一个获取刚才定义的模块
+angular.module('zfpxmd').controller('zfpxCtrl',function($timeout,$scope,$http){
+    if($http.count){
+    	$http.count=$http.count+1;
+    }else{
+		$http.count=1;
+    }
+	$scope.count=$http.count
+    console.log($http.count);
+
+
+
+	$scope.books=[];
+	$http.get('books.json').success(function(result){
+		$scope.books=result;
+	});
+	
+	$scope.cale=function(){
+		var sum=0;
+		$scope.books.forEach(function(book){
+          sum+=parseInt(book.prices);
+		});
+		return sum;
+	};
+	// $scope.username='zfpx';
+	// $http.get("./books.json").success(function(result){
+	// 	console.log(result);
+	// 	$scope.books=result;
+	// });
+	// $timeout(function(){
+	// 	$scope.username=new Date().toLocaleString();
+	// 	$scope.clcikMe=function(){
+	// 		alert($scope.username);
+	// 	}
+	// },1000);
+});
+
+
+</script>
