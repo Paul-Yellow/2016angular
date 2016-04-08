@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="bootstrap.css"/>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-success">
+                <div class="panel panel-heading">欢迎来到聊天室</div>
+                <div class="panel-body">
+                    <ul class="list-group" id="messageUl">
+                        <li class="list-group-item">
+                            消息
+                        </li>
+                    </ul>
+                </div>
+                <div class="panel-footer">
+                    <div class="row">
+                        <div class="col-md-9">
+                            <input type="text" class="form-control" id="txtmsg"/>
+                        </div>
+                        <div class="col-md-3">
+                            <button class="btn btn-default" type="button" id="sendBtn">send</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+<script src="/socket.io/socket.io.js"></script>
+<script src="jquery.js"></script>
+
+
+<script>
+    window.onload=function(){
+       var socket=io.connect('/');
+        socket.on('connect',function(){
+            $("#messageUl").append('<li class="list-group-item">链接服务器成功</li>')
+        });
+        socket.on('message',function(msg){
+            $("#messageUl").append('<li class="list-group-item">'+msg+'</li>')
+        });
+        $('#sendBtn').click(function(){
+            var message=$('#txtmsg').val();
+            socket.send(message);
+        });
+    }
+</script>
+
+

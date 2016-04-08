@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html ng-app="todoModule">
+  <head>
+    <title>bootstrap代办项</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel='stylesheet' href='../public/lib/bootstrap/dist/css/bootstrap.css' />
+    <link rel='stylesheet' href='/lib/bootstrap/dist/css/bootstrap.css' />
+  </head>
+  <body ng-controller="todoCtrl"style="margin-top: 20px;">
+   <div class="container">
+     <div class="jumbotron text-center">
+       <h1><label class="label label-info"></label>你有{{}}待办事项</h1>
+     </div>
+   </div>
+  <div class="row">
+    <div class="col-md-offset-4 col-md-4">
+      <div class="checkbox" ng-repeat="todo in todos">
+        <label>
+          <input type="checkbox"/>{{todo.text}}
+        </label>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-offset-2 col-md-8 text-center">
+      <form>
+        <div class="form-group">
+          <label>事项</label>
+          <input type="text" id="text" class="form-control" ng-model="todo.text"/>
+        </div>
+        <div class="form-group">
+          <button class="btn btn-primary" ng-click="addTodo()">提交</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  </body>
+</html>
+<script src="/lib/jquery/dist/jquery.js"></script>
+<script src="/lib/angular/angular.js"></script>
+<script src="/lib/bootstrap/dist/js/bootstrap.js"></script>
+<script>
+  angular.module('todoModule',[]);
+  angular.module('todoModule').factory('todoService',function($http){
+    return {
+       list:function(){
+          return $http.get('/todos');
+       },
+      add:function(data){
+        return $http.post('/todos',data);
+      }
+    }
+  });
+  angular.module('todoModule').controller("todoCtrl",function($scope,$http,todoService){
+    todoService.list().success(function(todos){
+      $scope.todos=todos;
+    });
+    $scope.todo={};
+    $scope.addTodo=function(){
+      todoService.add($scope.todo);
+    }
+  });
+</script>
